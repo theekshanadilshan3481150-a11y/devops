@@ -10,6 +10,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
+                // Checkout the repo
                 git branch: 'main',
                     url: 'https://github.com/theekshanadilshan3481150-a11y/devops.git'
             }
@@ -18,6 +19,7 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('backend') {
+                    // Build backend Docker image
                     sh 'docker build -t $IMAGE_BACKEND .'
                 }
             }
@@ -25,13 +27,21 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                sh 'docker build -t $IMAGE_FRONTEND -f frontend/Dockerfile frontend'
+                // Explicit absolute path to frontend Dockerfile
+                sh '''
+                cd $WORKSPACE/frontend
+                docker build -t $IMAGE_FRONTEND .
+                '''
             }
         }
 
         stage('Deploy with Docker Compose') {
             steps {
-                sh 'docker-compose up -d'
+                // Make sure docker-compose.yaml is at repo root
+                sh '''
+                cd $WORKSPACE
+                docker-compose up -d
+                '''
             }
         }
     }
