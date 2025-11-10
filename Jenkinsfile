@@ -7,9 +7,11 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/theekshanadilshan3481150-a11y/devops.git'
+                git branch: 'main',
+                    url: 'https://github.com/theekshanadilshan3481150-a11y/devops.git'
             }
         }
 
@@ -23,26 +25,23 @@ pipeline {
 
         stage('Build Frontend') {
             steps {
-                dir('frontend') {
-                    sh 'docker build -t $IMAGE_FRONTEND .'
-                }
+                sh 'docker build -t $IMAGE_FRONTEND -f frontend/Dockerfile frontend'
             }
         }
 
         stage('Deploy with Docker Compose') {
             steps {
-                sh 'docker compose down || true'
-                sh 'docker compose up -d'
+                sh 'docker-compose up -d'
             }
         }
     }
 
     post {
         success {
-            echo '🎉 Deployment Successful!'
+            echo "✅ Pipeline completed successfully!"
         }
         failure {
-            echo '❌ Something went wrong!'
+            echo "❌ Something went wrong in the pipeline!"
         }
     }
 }
