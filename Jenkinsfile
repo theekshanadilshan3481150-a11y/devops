@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_BACKEND = "myapp-backend"
-        IMAGE_FRONTEND = "myapp-frontend"
+        IMAGE_BACKEND = 'myapp-backend'
+        IMAGE_FRONTEND = 'myapp-frontend'
     }
 
     stages {
-        stage('Checkout Code') {
+
+        stage('Checkout SCM') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/theekshanadilshan3481150-a11y/devops.git'
+                checkout scm
             }
         }
 
@@ -22,20 +22,28 @@ pipeline {
             }
         }
 
-stage('Build Frontend') {
-    steps {
-        dir('frontend') {           // Move into the frontend folder
-            sh 'docker build -t myapp-frontend .'   // Build Docker image
+        stage('Build Frontend') {
+            steps {
+                dir('frontend') {
+                    sh 'docker build -t $IMAGE_FRONTEND .'
+                }
+            }
         }
+
+        stage('Deploy with Docker Compose') {
+            steps {
+                sh 'docker-compose up -d --build'
+            }
+        }
+
     }
-}
 
     post {
         success {
-            echo "✅ Pipeline completed successfully!"
+            echo '✅ Pipeline completed successfully!'
+        }
         failure {
-            echo "❌ Something went wrong in the pipeline!"
+            echo '❌ Something went wrong in the pipeline!'
         }
     }
 }
-
