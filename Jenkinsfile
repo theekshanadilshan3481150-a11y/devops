@@ -32,7 +32,7 @@ stage('Build Frontend App') {
 
         stage('Deploy with Docker Compose') {
             steps {
-                sh 'docker-compose up -d --build'
+                sh 'docker compose up -d --build'
             }
         }
 
