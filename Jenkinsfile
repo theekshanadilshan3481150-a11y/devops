@@ -22,23 +22,17 @@ pipeline {
             }
         }
 
-        stage('Build Frontend') {
-            steps {
-                sh 'docker build -t $IMAGE_FRONTEND -f $WORKSPACE/frontend/Dockerfile $WORKSPACE/frontend'
-            }
-        }
-
-        stage('Deploy with Docker Compose') {
-            steps {
-                sh 'docker-compose -f $WORKSPACE/docker-compose.yaml up -d'
-            }
+stage('Build Frontend') {
+    steps {
+        dir('frontend') {           // Move into the frontend folder
+            sh 'docker build -t myapp-frontend .'   // Build Docker image
         }
     }
+}
 
     post {
         success {
             echo "✅ Pipeline completed successfully!"
-        }
         failure {
             echo "❌ Something went wrong in the pipeline!"
         }
