@@ -14,21 +14,21 @@ pipeline {
             }
         }
 
-        stage('Build Backend') {
-            steps {
-                dir('backend') {
-                    sh 'docker build -t $IMAGE_BACKEND .'
-                }
-            }
+stage('Build Frontend') {
+    steps {
+        dir('frontend') {
+            sh 'docker build -t myapp-frontend -f Dockerfile .'
         }
+    }
+}
 
-        stage('Build Frontend') {
-            steps {
-                dir('frontend') {
-                    sh 'docker build -t $IMAGE_FRONTEND .'
-                }
-            }
+stage('Build Frontend') {
+    steps {
+        dir('frontend') {
+            sh 'docker build -t myapp-frontend -f Dockerfile .'
         }
+    }
+}
 
         stage('Deploy with Docker Compose') {
             steps {
