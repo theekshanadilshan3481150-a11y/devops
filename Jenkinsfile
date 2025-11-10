@@ -14,7 +14,7 @@ pipeline {
             }
         }
 
-stage('Build Frontend') {
+stage('Build Frontend Docker') {
     steps {
         dir('frontend') {
             sh 'docker build -t myapp-frontend -f Dockerfile .'
@@ -22,7 +22,7 @@ stage('Build Frontend') {
     }
 }
 
-stage('Build Frontend') {
+stage('Build Frontend App') {
     steps {
         dir('frontend') {
             sh 'docker build -t myapp-frontend -f Dockerfile .'
