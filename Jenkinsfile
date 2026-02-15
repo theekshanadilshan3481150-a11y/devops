@@ -39,14 +39,19 @@ pipeline {
 
     stage('Login to ECR + Push') {
       steps {
-        withCredentials([[
-          $class: 'AmazonWebServicesCredentialsBinding',
-          credentialsId: 'aws-creds'
-        ]]) {
+        // aws-creds MUST be "Username with password"
+        // username = AWS_ACCESS_KEY_ID
+        // password = AWS_SECRET_ACCESS_KEY
+        withCredentials([usernamePassword(
+          credentialsId: 'aws-creds',
+          usernameVariable: 'AKIARHMJDSDMELSZI5XQ',
+          passwordVariable: 'w892XYwXsnCavc8g80YboQJZ6Ue6eJxGxaFqhel7'
+        )]) {
           sh '''
             set -e
 
             aws --version
+
             aws ecr get-login-password --region ${AWS_REGION} | \
               docker login --username AWS --password-stdin ${ECR_REGISTRY}
 
