@@ -30,12 +30,12 @@ pipeline {
     }
 
     // ✅ Build Docker images from correct folders
-    stage('Build Docker images') {
-      steps {
-        sh 'bash -lc "docker build -t myapp-frontend ./my-react-app"'
-        sh 'bash -lc "docker build -t myapp-backend ./myApp"'
-      }
-    }
+stage('Build Docker images') {
+  steps {
+    sh 'bash -lc "docker build -t myapp-frontend ./my-react-app"'
+    sh 'bash -lc "docker build -t myapp-backend ./myApp/backend"'
+  }
+}
 
     stage('Login to ECR + Push') {
       steps {
