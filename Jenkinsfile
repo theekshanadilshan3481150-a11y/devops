@@ -15,29 +15,39 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') { steps { checkout scm } }
+    stage('Checkout') {
+      steps { checkout scm }
+    }
 
     stage('Build frontend') {
       steps {
-        sh 'npm ci'
-        sh 'npm run build'
+        // Force bash to avoid the "unknown option: -xe" issue
+        sh(label: 'npm ci',    script: 'bash -lc "npm ci"')
+        sh(label: 'npm build', script: 'bash -lc "npm run build"')
       }
     }
 
     stage('Build Docker images') {
       steps {
-        sh 'docker build -t myapp-frontend .'
-        sh 'docker build -t myapp-backend .'
+        // Force bash here too
+        sh 'bash -lc "docker build -t myapp-frontend ."'
+        sh 'bash -lc "docker build -t myapp-backend ."'
       }
     }
 
     stage('Login to ECR + Push') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'aws-creds', usernameVariable: 'AWS_ACCESS_KEY_ID', passwordVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+        withCredentials([usernamePassword(
+          credentialsId: 'aws-creds',
+          usernameVariable: 'AWS_ACCESS_KEY_ID',
+          passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+        )]) {
           sh '''
             aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+
             docker tag myapp-frontend:latest ${FRONTEND_REPO}:latest
             docker tag myapp-backend:latest  ${BACKEND_REPO}:latest
+
             docker push ${FRONTEND_REPO}:latest
             docker push ${BACKEND_REPO}:latest
           '''
