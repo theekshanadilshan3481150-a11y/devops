@@ -1,0 +1,36 @@
+# myApp/docker-compose.yaml
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: mongo_c
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: test
+    volumes:
+      - mongo_data:/data/db
+    command: ["mongod", "--quiet"]
+
+  backend:
+    build: ./backend
+    container_name: backend_c
+    ports:
+      - '4000:4000'
+    environment:
+      MONGO_URL: 'mongodb+srv://dbuser:Teekdil2001$@cluster0.laky46k.mongodb.net/?appName=Cluster0'
+    depends_on:
+      - mongo
+    stdin_open: true
+    tty: true
+
+  frontend:
+    build: ./frontend
+    container_name: frontend_c
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
