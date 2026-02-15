@@ -19,19 +19,21 @@ pipeline {
       steps { checkout scm }
     }
 
+    // ✅ Frontend is inside my-react-app/
     stage('Build frontend') {
       steps {
-        // Force bash to avoid the "unknown option: -xe" issue
-        sh(label: 'npm ci',    script: 'bash -lc "npm ci"')
-        sh(label: 'npm build', script: 'bash -lc "npm run build"')
+        dir('my-react-app') {
+          sh 'bash -lc "npm ci"'
+          sh 'bash -lc "npm run build"'
+        }
       }
     }
 
+    // ✅ Build Docker images from correct folders
     stage('Build Docker images') {
       steps {
-        // Force bash here too
-        sh 'bash -lc "docker build -t myapp-frontend ."'
-        sh 'bash -lc "docker build -t myapp-backend ."'
+        sh 'bash -lc "docker build -t myapp-frontend ./my-react-app"'
+        sh 'bash -lc "docker build -t myapp-backend ./myApp"'
       }
     }
 
