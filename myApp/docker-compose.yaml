@@ -18,7 +18,7 @@ services:
     ports:
       - '4000:4000'
     environment:
-      MONGO_URL: mongodb://mongo:27017/myAppDB
+      MONGO_URL: 'mongodb+srv://dbuser:Teekdil2001$@cluster0.laky46k.mongodb.net/?appName=Cluster0'
     depends_on:
       - mongo
     stdin_open: true
