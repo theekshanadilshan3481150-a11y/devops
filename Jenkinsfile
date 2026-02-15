@@ -14,10 +14,6 @@ pipeline {
     DEPLOY_DIR   = "~/myapp"
   }
 
-  options {
-    timestamps()
-  }
-
   stages {
     stage('Checkout') {
       steps {
@@ -66,7 +62,6 @@ pipeline {
 
     stage('Deploy on EC2') {
       steps {
-        // Requires "SSH Agent" plugin + credential id ec2-key
         sshagent(['ec2-key']) {
           sh '''
             set -e
@@ -75,7 +70,6 @@ pipeline {
               set -e
               cd ${DEPLOY_DIR}
 
-              # Use docker compose if available, otherwise fallback to docker-compose
               if docker compose version >/dev/null 2>&1; then
                 docker compose pull
                 docker compose up -d
