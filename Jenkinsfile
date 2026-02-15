@@ -33,7 +33,7 @@ pipeline {
 stage('Build Docker images') {
   steps {
     sh 'bash -lc "docker build -t myapp-frontend ./my-react-app"'
-    sh 'bash -lc "docker build -t myapp-backend ./myApp/backend"'
+   sh 'bash -lc "docker build -t myapp-backend ./myApp/backend"'
   }
 }
 
